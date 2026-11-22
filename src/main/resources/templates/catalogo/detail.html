@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación de Ejemplares - KODEX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/kodex.css}" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+    <div id="page-content-wrapper">
+        <div th:replace="~{layout/topbar :: topbar}"></div>
+        <main class="main-content">
+            <div th:replace="~{layout/alerts :: alerts}"></div>
+
+            <div class="card p-4 border shadow-sm mb-4">
+                <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
+                    <div>
+                        <span class="badge bg-primary mb-1" th:text="${libro.categoria.nombre}">Categoría</span>
+                        <h3 class="fw-bold text-dark mb-1" th:text="${libro.titulo}">Título del Libro</h3>
+                        <div class="text-muted"><i class="fa-solid fa-user-pen me-1"></i> <span th:text="${libro.autor}">Joshua Bloch</span></div>
+                    </div>
+                    <a th:href="@{/catalogo}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Volver al Catálogo
+                    </a>
+                </div>
+
+                <div class="row g-3 small">
+                    <div class="col-md-3"><strong>ISBN:</strong> <code th:text="${libro.isbn}">ISBN</code></div>
+                    <div class="col-md-3"><strong>Editorial:</strong> <span th:text="${libro.editorial}">Editorial</span></div>
+                    <div class="col-md-3"><strong>Año:</strong> <span th:text="${libro.anio}">Año</span></div>
+                    <div class="col-md-3">
+                        <strong>Disponibilidad:</strong>
+                        <span class="badge" th:classappend="${libro.ejemplaresDisponibles > 0 ? 'bg-success' : 'bg-danger'}"
+                              th:text="${libro.ejemplaresDisponibles} + ' disponibles de ' + ${libro.totalEjemplares}">0 de 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Copias Físicas y Ubicación en Sala -->
+            <div class="card card-table">
+                <div class="card-header">
+                    <span class="fw-bold text-dark"><i class="fa-solid fa-map-location-dot text-primary me-2"></i>Ubicación Física de las Copias en Sala</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Código de Inventario</th>
+                                <th>Ubicación en Estante</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="e : ${ejemplares}">
+                                <td>
+                                    <code class="fw-bold text-primary" th:text="${e.codigoInventario}">KDX-01-A</code>
+                                </td>
+                                <td>
+                                    <i class="fa-solid fa-location-dot text-secondary me-1"></i>
+                                    <span th:text="${e.ubicacion}">Estante A-1, Pasillo 1</span>
+                                </td>
+                                <td>
+                                    <span th:if="${e.estado.name() == 'DISPONIBLE'}" class="badge-estado badge-disponible">Disponible en Sala</span>
+                                    <span th:if="${e.estado.name() == 'PRESTADO'}" class="badge-estado badge-prestado">Actualmente Prestado</span>
+                                    <span th:if="${e.estado.name() == 'RESERVADO'}" class="badge-estado badge-reservado">Reservado</span>
+                                    <span th:if="${e.estado.name() == 'EN_REPARACION'}" class="badge-estado badge-reparacion">En Mantenimiento</span>
+                                    <span th:if="${e.estado.name() == 'BAJA'}" class="badge-estado badge-baja">Dado de Baja</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(ejemplares)}">
+                                <td colspan="3" class="text-center py-4 text-muted">No hay copias físicas registradas para este libro.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/kodex.js}"></script>
+</body>
+</html>

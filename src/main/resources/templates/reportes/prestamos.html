@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Préstamos - KODEX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/kodex.css}" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+    <div id="page-content-wrapper">
+        <div th:replace="~{layout/topbar :: topbar}"></div>
+        <main class="main-content">
+            <div th:replace="~{layout/alerts :: alerts}"></div>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold text-dark mb-1">
+                        <i class="fa-solid fa-chart-line text-primary me-2"></i>Reporte Gerencial de Préstamos y Demanda
+                    </h3>
+                    <p class="text-muted small mb-0">Consolidado por rango de fechas y ranking de libros más solicitados (SDD-18).</p>
+                </div>
+            </div>
+
+            <!-- Filtros por Rango de Fechas -->
+            <div class="card p-3 mb-4 border shadow-sm">
+                <form th:action="@{/reportes/prestamos}" method="get" class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small">Desde:</label>
+                        <input type="date" name="desde" th:value="${desde}" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Hasta:</label>
+                        <input type="date" name="hasta" th:value="${hasta}" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Estado:</label>
+                        <select name="estado" class="form-select form-select-sm">
+                            <option value="">-- Todos los Estados --</option>
+                            <option th:each="est : ${estados}"
+                                    th:value="${est}"
+                                    th:text="${est.nombreVisible}"
+                                    th:selected="${estado != null && estado == est}">Estado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-secondary btn-sm w-100">Generar Reporte</button>
+                        <a th:href="@{/reportes/prestamos}" class="btn btn-outline-secondary btn-sm" title="Limpiar"><i class="fa-solid fa-rotate-right"></i></a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Resumen del Periodo -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number text-primary" th:text="${totalPrestamosPeriodo}">0</div>
+                        <div class="stat-label">Total de Préstamos en el Periodo</div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card card-table h-100">
+                        <div class="card-header">
+                            <span class="fw-bold text-dark"><i class="fa-solid fa-trophy text-warning me-2"></i>Ranking de Libros Más Solicitados</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Posición</th>
+                                        <th>Título del Libro</th>
+                                        <th>Autor</th>
+                                        <th class="text-center">Veces Prestado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="rk, stat : ${rankingLibros}" th:if="${stat.index < 5}">
+                                        <td class="fw-bold text-muted" th:text="'#' + ${stat.count}">#1</td>
+                                        <td class="fw-semibold text-dark" th:text="${rk[1]}">Título</td>
+                                        <td class="small text-muted" th:text="${rk[2]}">Autor</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary px-3 rounded-pill" th:text="${rk[3]}">0</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(rankingLibros)}">
+                                        <td colspan="4" class="text-center py-3 text-muted">Sin datos suficientes para generar ranking.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalle de Préstamos del Periodo -->
+            <div class="card card-table">
+                <div class="card-header">
+                    <span class="fw-bold text-dark"><i class="fa-solid fa-list-check text-primary me-2"></i>Detalle de Préstamos del Periodo Seleccionado</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Fecha Préstamo</th>
+                                <th>Lector</th>
+                                <th>Libro Prestado</th>
+                                <th>Fecha Límite</th>
+                                <th>Fecha Devolución</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${prestamos}">
+                                <td th:text="${p.fechaPrestamo}">2026-11-01</td>
+                                <td>
+                                    <div class="fw-semibold" th:text="${p.lector.nombre}">Lector</div>
+                                    <small class="text-muted" th:text="${p.lector.documento}">12345</small>
+                                </td>
+                                <td>
+                                    <div th:text="${p.ejemplar.libro.titulo}">Libro</div>
+                                    <code class="small text-muted" th:text="${p.ejemplar.codigoInventario}">KDX-01</code>
+                                </td>
+                                <td th:text="${p.fechaLimite}">2026-11-08</td>
+                                <td>
+                                    <span th:if="${p.fechaDevolucion != null}" th:text="${p.fechaDevolucion}">2026-11-07</span>
+                                    <span th:unless="${p.fechaDevolucion != null}" class="text-muted small">No devuelto</span>
+                                </td>
+                                <td>
+                                    <span th:if="${p.estado.name() == 'ACTIVO'}" class="badge-estado badge-activo">Activo</span>
+                                    <span th:if="${p.estado.name() == 'DEVUELTO'}" class="badge-estado badge-devuelto">Devuelto</span>
+                                    <span th:if="${p.estado.name() == 'VENCIDO'}" class="badge-estado badge-vencido">Vencido</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(prestamos)}">
+                                <td colspan="6" class="text-center py-4 text-muted">No se registraron préstamos en el rango de fechas indicado.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/kodex.js}"></script>
+</body>
+</html>

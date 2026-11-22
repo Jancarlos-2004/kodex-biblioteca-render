@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: kodex-biblioteca
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: kodex-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: kodex-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: kodex-db
+          property: password
+
+databases:
+  - name: kodex-db
+    plan: free
+    databaseName: kodex_db
+    postgresMajorVersion: "17"

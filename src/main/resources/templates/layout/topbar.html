@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+    <nav th:fragment="topbar" class="navbar navbar-expand-lg top-navbar">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary btn-sm me-3" id="sidebarToggle" type="button">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <span class="navbar-text d-none d-md-block text-muted small">
+                <i class="fa-solid fa-graduation-cap text-primary me-1"></i>
+                <strong>KODEX</strong> &bull; Sistema Integral de Gestión de Biblioteca (UTS)
+            </span>
+
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <div class="user-profile-badge" sec:authorize="isAuthenticated()">
+                    <i class="fa-solid fa-circle-user text-primary fs-5"></i>
+                    <div class="d-flex flex-column text-start">
+                        <span class="small fw-bold" sec:authentication="name">usuario@kodex.com</span>
+                        <div class="d-flex gap-1 align-items-center">
+                            <span class="role-pill" sec:authorize="hasRole('ADMIN')">ADMIN</span>
+                            <span class="role-pill bg-success" sec:authorize="hasRole('BIBLIOTECARIO')">BIBLIOTECARIO</span>
+                            <span class="role-pill bg-info text-dark" sec:authorize="hasRole('CATALOGADOR')">CATALOGADOR</span>
+                            <span class="role-pill bg-warning text-dark" sec:authorize="hasRole('TESORERO')">TESORERO</span>
+                            <span class="role-pill bg-secondary" sec:authorize="hasRole('GERENTE')">GERENTE</span>
+                            <span class="role-pill bg-primary" sec:authorize="hasRole('LECTOR')">LECTOR</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form th:action="@{/logout}" method="post" class="m-0" sec:authorize="isAuthenticated()">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Cerrar Sesión">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>
+                        <span class="d-none d-sm-inline">Salir</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

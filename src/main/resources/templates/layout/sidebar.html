@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+    <div th:fragment="sidebar" id="sidebar-wrapper">
+        <div class="sidebar-heading d-flex align-items-center">
+            <i class="fa-solid fa-book-bookmark text-primary me-2"></i>
+            <span>KODEX</span>
+            <span class="sidebar-brand-badge">UTS</span>
+        </div>
+
+        <div class="sidebar-nav">
+            <!-- Menú Principal para Funcionarios y Administradores -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'BIBLIOTECARIO', 'CATALOGADOR', 'TESORERO', 'GERENTE')">
+                <div class="sidebar-nav-title">Principal</div>
+                <a th:href="@{/dashboard}" class="sidebar-link">
+                    <i class="fa-solid fa-gauge-high"></i> Dashboard
+                </a>
+                <a th:href="@{/catalogo}" class="sidebar-link">
+                    <i class="fa-solid fa-magnifying-glass"></i> Consultar Catálogo
+                </a>
+            </div>
+
+            <!-- Gestión Bibliográfica (ADMIN & CATALOGADOR) -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'CATALOGADOR')">
+                <div class="sidebar-nav-title">Catálogo e Inventario</div>
+                <a th:href="@{/categorias}" class="sidebar-link">
+                    <i class="fa-solid fa-tags"></i> Categorías
+                </a>
+                <a th:href="@{/libros}" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i> Libros
+                </a>
+                <a th:href="@{/ejemplares}" class="sidebar-link">
+                    <i class="fa-solid fa-barcode"></i> Ejemplares Físicos
+                </a>
+            </div>
+
+            <!-- Circulación y Préstamos (ADMIN & BIBLIOTECARIO) -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'BIBLIOTECARIO')">
+                <div class="sidebar-nav-title">Circulación</div>
+                <a th:href="@{/lectores}" class="sidebar-link">
+                    <i class="fa-solid fa-address-book"></i> Lectores
+                </a>
+                <a th:href="@{/prestamos}" class="sidebar-link">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Préstamos
+                </a>
+                <a th:href="@{/reservas}" class="sidebar-link">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Reservas
+                </a>
+            </div>
+
+            <!-- Caja y Multas (ADMIN & TESORERO) -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'TESORERO')">
+                <div class="sidebar-nav-title">Finanzas y Multas</div>
+                <a th:href="@{/multas}" class="sidebar-link">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Control de Multas
+                </a>
+            </div>
+
+            <!-- Reportes Gerenciales (ADMIN & GERENTE) -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'GERENTE')">
+                <div class="sidebar-nav-title">Informes e Indicadores</div>
+                <a th:href="@{/reportes/prestamos}" class="sidebar-link">
+                    <i class="fa-solid fa-chart-line"></i> Reporte de Préstamos
+                </a>
+                <a th:href="@{/reportes/multas}" class="sidebar-link">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Reporte de Recaudos
+                </a>
+            </div>
+
+            <!-- Portal de Lectores (Exclusivo LECTOR) -->
+            <div sec:authorize="hasRole('LECTOR')">
+                <div class="sidebar-nav-title">Mi Cuenta</div>
+                <a th:href="@{/portal}" class="sidebar-link">
+                    <i class="fa-solid fa-user-circle"></i> Mi Perfil
+                </a>
+                <a th:href="@{/catalogo}" class="sidebar-link">
+                    <i class="fa-solid fa-book-open"></i> Catálogo General
+                </a>
+                <a th:href="@{/portal/prestamos}" class="sidebar-link">
+                    <i class="fa-solid fa-book-bookmark"></i> Mis Préstamos
+                </a>
+                <a th:href="@{/portal/reservas}" class="sidebar-link">
+                    <i class="fa-solid fa-calendar-check"></i> Mis Reservas
+                </a>
+                <a th:href="@{/portal/multas}" class="sidebar-link">
+                    <i class="fa-solid fa-receipt"></i> Mis Multas
+                </a>
+            </div>
+
+            <!-- Administración del Sistema (Solo ADMIN) -->
+            <div sec:authorize="hasRole('ADMIN')">
+                <div class="sidebar-nav-title">Sistema</div>
+                <a th:href="@{/usuarios}" class="sidebar-link">
+                    <i class="fa-solid fa-users-gear"></i> Usuarios y Roles
+                </a>
+                <a th:href="@{/configuracion}" class="sidebar-link">
+                    <i class="fa-solid fa-sliders"></i> Configuración General
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

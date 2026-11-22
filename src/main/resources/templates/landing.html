@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Te damos la bienvenida a KODEX — Universitaria Tecnológica de Santander</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans / Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --kodex-bg-warm: #f6f3ee;
+            --kodex-text-main: #1d1c1d;
+            --kodex-text-muted: #616061;
+            --kodex-blue: #1d4ed8;
+            --kodex-blue-dark: #1e3a8a;
+            --kodex-blue-subtle: #eff6ff;
+            --kodex-amber: #eab308;
+            --kodex-green: #10b981;
+            --kodex-purple: #4f46e5;
+            --kodex-card-border: #e2d9cf;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--kodex-bg-warm);
+            color: var(--kodex-text-main);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar estilo Slack moderno */
+        .slack-nav {
+            background-color: var(--kodex-bg-warm);
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .slack-logo {
+            font-weight: 900;
+            font-size: 1.6rem;
+            letter-spacing: -0.03em;
+            color: var(--kodex-text-main);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slack-logo i {
+            color: var(--kodex-blue);
+            font-size: 1.7rem;
+        }
+
+        .slack-nav-link {
+            color: var(--kodex-text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            padding: 0.5rem 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .slack-nav-link:hover {
+            color: var(--kodex-blue);
+        }
+
+        .btn-slack-outline {
+            border: 1.5px solid var(--kodex-blue);
+            color: var(--kodex-blue);
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.65rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-slack-outline:hover {
+            background-color: rgba(29, 78, 216, 0.08);
+            color: var(--kodex-blue-dark);
+        }
+
+        .btn-slack-primary {
+            background-color: var(--kodex-blue);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.75rem 1.45rem;
+            border-radius: 6px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-slack-primary:hover {
+            background-color: var(--kodex-blue-dark);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+        }
+
+        /* Hero Section estilo Slack */
+        .slack-hero {
+            padding: 3.5rem 0 5rem;
+        }
+
+        .hero-headline {
+            font-size: clamp(2.75rem, 5.2vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.035em;
+            color: var(--kodex-text-main);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtext {
+            font-size: 1.15rem;
+            line-height: 1.65;
+            color: #3f3e40;
+            max-width: 540px;
+            margin-bottom: 2rem;
+            font-weight: 450;
+        }
+
+        .btn-hero-cta {
+            background-color: var(--kodex-blue);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 1.05rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(29, 78, 216, 0.28);
+        }
+
+        .btn-hero-cta:hover {
+            background-color: var(--kodex-blue-dark);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+        }
+
+        /* Composición Visual con Círculos de Colores e Imágenes de Biblioteca */
+        .hero-visual-wrapper {
+            position: relative;
+            min-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Círculo Amarillo Izquierdo */
+        .circle-bg-yellow {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            background-color: #f59e0b;
+            border-radius: 50%;
+            left: 2%;
+            top: 8%;
+            z-index: 1;
+        }
+
+        /* Círculo Verde Derecho */
+        .circle-bg-green {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            background-color: #10b981;
+            border-radius: 50%;
+            right: 2%;
+            bottom: 6%;
+            z-index: 1;
+        }
+
+        /* Imagen 1 (Estudiante en biblioteca con libros) */
+        .library-hero-img-1 {
+            position: absolute;
+            left: 4%;
+            top: 2%;
+            width: 250px;
+            height: 310px;
+            object-fit: cover;
+            border-radius: 28px;
+            box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            border: 4px solid #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .library-hero-img-1:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Imagen 2 (Estanterías y sala de lectura de biblioteca universitaria) */
+        .library-hero-img-2 {
+            position: absolute;
+            right: 3%;
+            bottom: 2%;
+            width: 250px;
+            height: 310px;
+            object-fit: cover;
+            border-radius: 28px;
+            box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            border: 4px solid #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .library-hero-img-2:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Sección de Métricas / Cinta */
+        .stats-ribbon {
+            background-color: #ffffff;
+            border-top: 1px solid var(--kodex-card-border);
+            border-bottom: 1px solid var(--kodex-card-border);
+            padding: 2.25rem 0;
+        }
+
+        .stat-ribbon-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--kodex-blue);
+            line-height: 1.1;
+        }
+
+        .stat-ribbon-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--kodex-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Sección de Tarjetas de Valor */
+        .slack-features-section {
+            padding: 5rem 0;
+            background-color: #ffffff;
+        }
+
+        .slack-feature-card {
+            background-color: var(--kodex-bg-warm);
+            border-radius: 12px;
+            padding: 2rem;
+            height: 100%;
+            border: 1px solid var(--kodex-card-border);
+            transition: all 0.25s ease;
+        }
+
+        .slack-feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+            border-color: #93c5fd;
+        }
+
+        .feature-badge-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Ficha Institucional UTS */
+        .uts-banner {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 4rem 0;
+        }
+
+        /* Footer */
+        .slack-footer {
+            background-color: #0b1120;
+            color: #94a3b8;
+            padding: 2.5rem 0 2rem;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .slack-footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .slack-footer a:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 991px) {
+            .hero-visual-wrapper {
+                margin-top: 2rem;
+                min-height: 320px;
+            }
+            .circle-bg-yellow, .circle-bg-green {
+                width: 160px;
+                height: 160px;
+            }
+            .library-hero-img-1, .library-hero-img-2 {
+                width: 155px;
+                height: 210px;
+                border-radius: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación Estilo Slack -->
+    <header class="slack-nav">
+        <div class="container d-flex align-items-center justify-content-between">
+            <!-- Brand Logo -->
+            <a th:href="@{/}" class="slack-logo">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>KODEX</span>
+                <span class="badge bg-primary text-white rounded-pill px-2 py-1 ms-1" style="font-size: 0.68rem; font-weight: 700;">UTS</span>
+            </a>
+
+            <!-- Enlaces de navegación central -->
+            <nav class="d-none d-lg-flex align-items-center gap-1">
+                <a href="#modulos" class="slack-nav-link">Servicios</a>
+                <a href="#roles" class="slack-nav-link">Roles</a>
+                <a href="#catalogo" class="slack-nav-link">Catálogo</a>
+                <a href="#institucion" class="slack-nav-link">Institución</a>
+            </nav>
+
+            <!-- Botones a la derecha -->
+            <div class="d-flex align-items-center gap-2">
+                <a th:if="${!estaAutenticado}" th:href="@{/login}" class="slack-nav-link d-none d-sm-inline fw-bold me-1">
+                    Iniciar sesión
+                </a>
+                <a th:if="${!estaAutenticado}" th:href="@{/login}" class="btn-slack-primary">
+                    <span>Acceder</span>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+                </a>
+                <a th:if="${estaAutenticado}" th:href="@{${rutaPanel}}" class="btn-slack-primary bg-success">
+                    <i class="fa-solid fa-gauge-high me-1"></i>
+                    <span>Ir a Mi Panel</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section Idéntico en Estructura y Alma al de Slack -->
+    <main class="slack-hero">
+        <div class="container">
+            <div class="row align-items-center g-4 g-lg-5">
+                <!-- Columna Izquierda: Mensaje y Titular Potente -->
+                <div class="col-lg-6">
+                    <h1 class="hero-headline">
+                        Te damos la bienvenida a tu nueva biblioteca digital
+                    </h1>
+
+                    <p class="hero-subtext">
+                        La gestión académica puede ser compleja, dispersa y desordenada... pero sigue siendo el motor de nuestra formación. Por eso creamos <strong>KODEX</strong>, un espacio donde estudiantes, docentes y bibliotecarios organizan, consultan y comparten su conocimiento.
+                    </p>
+
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a th:if="${!estaAutenticado}" th:href="@{/login}" class="btn-hero-cta">
+                            Ingresar a KODEX
+                        </a>
+                        <a th:if="${estaAutenticado}" th:href="@{${rutaPanel}}" class="btn-hero-cta bg-success">
+                            Ir a Mi Panel
+                        </a>
+                        <a href="#modulos" class="btn-slack-outline py-3 px-4">
+                            Conocer Módulos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Composición Visual con Círculos y Fotos de Biblioteca -->
+                <div class="col-lg-6">
+                    <div class="hero-visual-wrapper">
+                        <!-- Círculo Amarillo / Mostaza Izquierdo -->
+                        <div class="circle-bg-yellow"></div>
+                        <!-- Foto 1: Estudiante consultando y leyendo libros en biblioteca -->
+                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80"
+                             alt="Estudiante leyendo en la biblioteca UTS" class="library-hero-img-1">
+
+                        <!-- Círculo Verde Derecho -->
+                        <div class="circle-bg-green"></div>
+                        <!-- Foto 2: Estanterías y sala de lectura de libros KODEX -->
+                        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80"
+                             alt="Estanterías de biblioteca universitaria KODEX" class="library-hero-img-2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cinta de Estadísticas en Vivo de la Base de Datos -->
+    <section class="stats-ribbon">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-ribbon-number" th:text="${totalLibros}">5</div>
+                    <div class="stat-ribbon-label">Títulos Bibliográficos</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-ribbon-number text-success" th:text="${ejemplaresDisponibles}">7</div>
+                    <div class="stat-ribbon-label">Copias Disponibles</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-ribbon-number text-warning">6</div>
+                    <div class="stat-ribbon-label">Roles Especializados</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-ribbon-number text-dark">100%</div>
+                    <div class="stat-ribbon-label">Reglas SDD Verificadas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Módulos (Estilo Slack Features) -->
+    <section id="modulos" class="slack-features-section">
+        <div class="container">
+            <div class="text-center mb-5 max-w-700 mx-auto" style="max-width: 650px;">
+                <span class="text-uppercase fw-bold small text-primary letter-spacing-1">Servicios Académicos</span>
+                <h2 class="fw-bold mt-2 display-6" style="letter-spacing: -0.02em;">Conoce todo lo que KODEX hace por tu biblioteca</h2>
+                <p class="text-muted fs-6">Una experiencia unificada que sustituye registros manuales por automatización confiable.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Módulo 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-primary text-white">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Catálogo e Inventario Físico</h5>
+                        <p class="text-muted small mb-0">
+                            Control estricto de ISBN único, seguimiento individual de cada ejemplar mediante código de inventario y ubicación en estante físico.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Módulo 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-success text-white">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Préstamos y Renovaciones</h5>
+                        <p class="text-muted small mb-0">
+                            Plazos inteligentes de 7 días, límite máximo de 3 libros activos por lector y renovación permitida siempre que no existan reservas pendientes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Módulo 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-warning text-dark">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Cálculo Automático de Multas</h5>
+                        <p class="text-muted small mb-0">
+                            Detección automática de entregas tardías multiplicando días de mora por la tarifa configurada. Registro seguro de cobros en tesorería.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Módulo 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-info text-dark">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Reservas de Libros Agotados</h5>
+                        <p class="text-muted small mb-0">
+                            Permite apartar obras cuando no quedan ejemplares disponibles en sala, asignando vigencia de 5 días hábiles para su reclamo.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Módulo 5 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-secondary text-white">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Portal de Autogestión Lector</h5>
+                        <p class="text-muted small mb-0">
+                            Espacio privado donde los usuarios consultan únicamente sus propios préstamos, verifican fechas límites y solicitan reservas en línea.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Módulo 6 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="slack-feature-card">
+                        <div class="feature-badge-icon bg-dark text-white">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Informes Gerenciales</h5>
+                        <p class="text-muted small mb-0">
+                            Consolidados ejecutivos por rango de fechas: auditoría de circulación, ranking de los libros más pedidos y recaudos de tesorería.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Roles del Sistema (SDD) -->
+    <section id="roles" class="py-5" style="background-color: var(--kodex-bg-warm); border-top: 1px solid var(--kodex-card-border);">
+        <div class="container py-4">
+            <div class="text-center mb-5 max-w-700 mx-auto" style="max-width: 600px;">
+                <span class="text-uppercase fw-bold small text-primary">Seguridad y Permisos</span>
+                <h2 class="fw-bold mt-2" style="letter-spacing: -0.02em;">Diseñado para seis perfiles de usuario</h2>
+                <p class="text-muted">Cada rol accede exclusivamente a los módulos requeridos para su labor.</p>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Administrador General</h6>
+                            <span class="badge bg-primary">ADMIN</span>
+                        </div>
+                        <p class="text-muted small mb-0">Gestión de cuentas de usuario, asignación de roles y configuración de políticas del sistema.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Bibliotecario</h6>
+                            <span class="badge bg-success">BIBLIOTECARIO</span>
+                        </div>
+                        <p class="text-muted small mb-0">Registro de lectores, creación de préstamos, renovaciones, devoluciones y atención de reservas.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Catalogador</h6>
+                            <span class="badge bg-info text-dark">CATALOGADOR</span>
+                        </div>
+                        <p class="text-muted small mb-0">Ingreso de nuevos libros, asignación de categorías y control del estado de ejemplares en sala.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Tesorero</h6>
+                            <span class="badge bg-warning text-dark">TESORERO</span>
+                        </div>
+                        <p class="text-muted small mb-0">Gestión de caja: cobro de multas por mora, expedición de paz y salvo y consulta de ingresos.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Gerente</h6>
+                            <span class="badge bg-secondary">GERENTE</span>
+                        </div>
+                        <p class="text-muted small mb-0">Auditoría directiva, métricas de circulación, estadísticas de libros leídos y balances financieros.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 border shadow-sm rounded-3 h-100 bg-white">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold mb-0">Lector</h6>
+                            <span class="badge bg-dark">LECTOR</span>
+                        </div>
+                        <p class="text-muted small mb-0">Estudiantes y docentes con portal personal para consultar préstamos, multas y apartar libros.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Institucional UTS -->
+    <section id="institucion" class="uts-banner">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="fa-solid fa-graduation-cap text-warning fs-1"></i>
+                        <div>
+                            <h3 class="fw-bold mb-0">Universitaria Tecnológica de Santander</h3>
+                            <span class="text-white-50">Proyecto Académico &bull; Asignatura: Programación en Java</span>
+                        </div>
+                    </div>
+                    <p class="text-light text-opacity-80 mb-0" style="font-size: 0.95rem;">
+                        Sistema desarrollado siguiendo el marco de trabajo <strong>Scrum adaptado</strong> y el paradigma <strong>Desarrollo Dirigido por Especificaciones (SDD)</strong> con requerimientos EARS y criterios verificables Given / When / Then.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a th:href="@{/login}" class="btn-slack-primary bg-primary text-white py-3 px-4 fs-6">
+                        <span>Iniciar Sesión en KODEX</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Estilo Slack -->
+    <footer class="slack-footer">
+        <div class="container d-md-flex align-items-center justify-content-between text-center text-md-start">
+            <div class="small">
+                &copy; 2026 <strong>KODEX</strong> &bull; Universitaria Tecnológica de Santander &bull; Versión 1.0.0
+            </div>
+            <div class="small mt-2 mt-md-0 d-flex gap-3 justify-content-center">
+                <a th:href="@{/login}">Iniciar Sesión</a>
+                <a href="#modulos">Servicios</a>
+                <a href="#roles">Roles</a>
+                <a href="#institucion">Institución</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

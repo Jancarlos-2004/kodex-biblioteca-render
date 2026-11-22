@@ -1,0 +1,24 @@
+# Maven / Gradle
+target/
+build/
+.gradle/
+
+# Eclipse / STS
+.settings/
+.classpath
+.project
+.metadata/
+bin/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs y secretos
+*.log
+.env
