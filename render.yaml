@@ -6,15 +6,25 @@ services:
     region: oregon
     healthCheckPath: /
     envVars:
-      - key: SPRING_DATASOURCE_URL
+      # Render entrega connectionString como postgres://usuario:clave@host/bd,
+      # que NO es válido para JDBC. Usamos las propiedades separadas.
+      - key: PGHOST
         fromDatabase:
           name: kodex-db
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: kodex-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: kodex-db
+          property: database
+      - key: PGUSER
         fromDatabase:
           name: kodex-db
           property: user
-      - key: SPRING_DATASOURCE_PASSWORD
+      - key: PGPASSWORD
         fromDatabase:
           name: kodex-db
           property: password
