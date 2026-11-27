@@ -94,11 +94,13 @@ public class ReporteController {
         }
 
         List<Multa> todas = multaRepository.findAll();
+        final LocalDate fechaDesde = desde;
+        final LocalDate fechaHasta = hasta;
 
         List<Multa> multasPagadas = todas.stream()
                 .filter(m -> m.getEstado() == EstadoMulta.PAGADA)
                 .filter(m -> m.getFechaPago() != null)
-                .filter(m -> !m.getFechaPago().isBefore(desde) && !m.getFechaPago().isAfter(hasta))
+                .filter(m -> !m.getFechaPago().isBefore(fechaDesde) && !m.getFechaPago().isAfter(fechaHasta))
                 .collect(Collectors.toList());
 
         BigDecimal recaudoPeriodo = sumar(multasPagadas);
