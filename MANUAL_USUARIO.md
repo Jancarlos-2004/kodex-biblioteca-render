@@ -168,7 +168,7 @@ El sistema valida automáticamente: que el lector esté activo, que no tenga mul
 - **Reporte de préstamos:** filtra por rango de fechas y estado, muestra total del periodo y ranking de los 5 libros más solicitados.
 - **Reporte de multas:** filtra por fecha de pago, muestra recaudo del periodo, total histórico y cartera pendiente.
 
-> **Estado de pruebas:** se detectó un error 500 en ambos reportes en la versión publicada. Ya fue corregido en el código (`ReporteController` calcula los agregados en Java para evitar una incompatibilidad de Hibernate 6 con PostgreSQL) y está pendiente de que Render publique esa corrección. Ver sección 7.
+> **Estado de pruebas:** se detectó un error 500 en ambos reportes y ya fue corregido y publicado. `ReporteController` calcula los agregados y filtra en memoria, evitando enviar parámetros `null` a PostgreSQL en predicados JPQL. Verificado con HTTP 200 en las dos versiones desplegadas.
 
 ### 5.11 Usuarios y roles (ADMIN)
 - Alta de usuarios con nombre, correo (login), contraseña, rol y lector vinculado (obligatorio para `LECTOR`).
@@ -223,12 +223,12 @@ Se ejecutaron pruebas automatizadas sobre **https://kodex-biblioteca.onrender.co
 | Cancelar reserva | Correcto: “Reserva CANCELADA exitosamente (SDD-17)” |
 | Lector solicita reserva de libro disponible | **Rechazo correcto**: “El libro tiene ejemplares DISPONIBLES en sala…” |
 | Lector abre `/prestamos/nuevo` | **403 esperado** (diseño por rol) |
-| Reportes | **Fallo detectado (HTTP 500)** en la versión publicada; corrección ya enviada a GitHub, pendiente de deploy |
+| Reportes (prestamos y multas) | **Correcto tras la corrección**: HTTP 200 en final y avance |
 
 ### 6.3 Hallazgos
 
 1. **Acceso a “prestar libros disponibles”:** el préstamo funciona correctamente con ADMIN y BIBLIOTECARIO. Un LECTOR no puede entrar a `/prestamos/nuevo` (403) porque la regla de negocio del proyecto reserva esa operación al bibliotecario. El catálogo del lector muestra **Reservar** sólo cuando no hay copias disponibles. No es un error de código, sino el diseño de permisos.
-2. **Reportes 500:** detectado en `/reportes/prestamos` y `/reportes/multas`. Causa probable: consultas JPQL agregadas (`COUNT(...) AS …`, `COALESCE(SUM(...), 0.0)`) incompatibles con Hibernate 6 + PostgreSQL. Corrección: calcular los agregados en Java dentro de `ReporteController`.
+2. **Reportes 500 (resuelto):** ocurría en `/reportes/prestamos` y `/reportes/multas`. Causa confirmada en logs: `ERROR: could not determine data type of parameter $N` de PostgreSQL, provocada por predicados JPQL `(:param IS NULL OR ...)` con parámetros `null`. Corrección: filtrar y agregar en Java dentro de `ReporteController`, sin enviar esos parámetros a la BD. Verificado HTTP 200 en ambas versiones.
 3. **Datos de prueba:** durante las pruebas se crearon y eliminaron registros temporales; el préstamo de prueba fue renovado y devuelto, quedando el ejemplar disponible nuevamente.
 
 ---
@@ -237,8 +237,8 @@ Se ejecutaron pruebas automatizadas sobre **https://kodex-biblioteca.onrender.co
 
 | Versión | Repositorio | Rama publicada | Commit de corrección | URL |
 |---|---|---|---|---|
-| Final | `Jancarlos-2004/kodex-biblioteca-render` | `main` | `b024069` | https://kodex-biblioteca.onrender.com |
-| Avance | `Jancarlos-2004/kodex-biblioteca-avance` | `deploy` | `665b4e2` | https://kodex-biblioteca-avance.onrender.com |
+| Final | `Jancarlos-2004/kodex-biblioteca-render` | `main` | `3bac568` | https://kodex-biblioteca.onrender.com |
+| Avance | `Jancarlos-2004/kodex-biblioteca-avance` | `deploy` | `c05f671` | https://kodex-biblioteca-avance.onrender.com |
 
 Ambos servicios comparten la base de datos PostgreSQL gratuita **`kodex-db`** de Render. El proyecto final usa Docker + PostgreSQL (no MySQL) porque Render no ejecuta Java de forma nativa.
 
