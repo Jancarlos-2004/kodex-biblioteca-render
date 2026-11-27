@@ -53,7 +53,18 @@ public class ReporteController {
             hasta = LocalDate.now();
         }
 
-        List<Prestamo> prestamos = prestamoRepository.filtrarPrestamos(null, estado, desde, hasta);
+        final LocalDate fechaDesdePrestamo = desde;
+        final LocalDate fechaHastaPrestamo = hasta;
+        final EstadoPrestamo estadoFiltro = estado;
+
+        // Se filtra en memoria para no enviar parámetros null a PostgreSQL
+        // en predicados JPQL del tipo (:param IS NULL OR ...).
+        List<Prestamo> prestamos = prestamoRepository.findAll().stream()
+                .filter(p -> estadoFiltro == null || p.getEstado() == estadoFiltro)
+                .filter(p -> p.getFechaPrestamo() != null)
+                .filter(p -> !p.getFechaPrestamo().isBefore(fechaDesdePrestamo)
+                        && !p.getFechaPrestamo().isAfter(fechaHastaPrestamo))
+                .collect(Collectors.toList());
 
         // Ranking de los 5 libros más prestados (calculado sobre todo el historial).
         Map<Libro, Long> conteo = prestamoRepository.findAll().stream()
