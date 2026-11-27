@@ -15,6 +15,51 @@ KODEX es un sistema integral de gestión de biblioteca para la Universitaria Tec
 
 ---
 
+## 1.1 Guía rápida paso a paso
+
+### A) Prestar un libro disponible (rol BIBLIOTECARIO)
+
+1. Abra **https://kodex-biblioteca.onrender.com** (o `http://localhost:8094` en local). Si tarda, espere: Render está despertando el servidor.
+2. En la portada pulse **Ingresar al Sistema** (arriba a la derecha) o abra directamente `/login`.
+3. En **Correo Electrónico** escriba `bibliotecario@kodex.com`.
+4. En **Contraseña** escriba `kodex123`.
+5. Pulse **Ingresar al Sistema**. El sistema lo lleva al **Dashboard Central**.
+6. En el menú lateral, bajo **CIRCULACIÓN**, pulse **Préstamos**.
+7. En la pantalla "Control de Préstamos y Circulación", pulse el botón azul **Registrar Préstamo**.
+8. En **Lector Beneficiario**, despliegue la lista y elija un lector. Sólo aparecen los lectores activos.
+9. En **Ejemplar Disponible**, despliegue la lista y elija una copia. Sólo aparecen los ejemplares con estado `DISPONIBLE`.
+10. Verifique la fecha límite sugerida (7 días por defecto) y pulse **Confirmar Préstamo**.
+11. Aparece el mensaje verde: **“Préstamo registrado exitosamente. Fecha límite de devolución: …”**. El préstamo queda listado con estado **Activo**.
+
+**Para devolverlo:** en la misma pantalla **Préstamos**, busque la fila del préstamo y pulse **Devolver**. Verá **“Devolución registrada exitosamente… El ejemplar queda DISPONIBLE”**.  
+**Para renovarlo:** pulse **Renovar** en la fila correspondiente; se amplía la fecha límite.
+
+> Un **ADMIN** (`admin@kodex.com` / `kodex123`) hace exactamente lo mismo. Un **LECTOR** no puede prestar: si abre `/prestamos/nuevo` ve una pantalla 403. Debe pedirle el libro al bibliotecario.
+
+### B) Solicitar una reserva (rol LECTOR, sólo si no hay copias)
+
+1. Ingrese con `lector@kodex.com` / `kodex123`. El sistema lo lleva a **Mi Perfil – Portal de Lectores** (no al dashboard).
+2. En el menú **MI CUENTA**, pulse **Catálogo General**.
+3. Busque el libro. Si dice **0 DISPONIBLE(S)**, pulse **Ver Ubicaciones** y luego **Reservar**.
+4. Si el libro tiene copias disponibles, el botón de reserva no aparece o es rechazado con: *“El libro tiene ejemplares DISPONIBLES en sala. Puede acercarse al bibliotecario para un préstamo directo.”* Eso es correcto: para esos libros se usa el paso A.
+5. Consulte el estado de su solicitud en **Mis Reservas**.
+
+### C) Registrar el pago de una multa (rol TESORERO)
+
+1. Ingrese con `tesorero@kodex.com` / `kodex123`.
+2. En el menú lateral pulse **Multas**.
+3. Filtre si desea por estado o rango de fechas de pago.
+4. En la fila de la multa pendiente pulse **Registrar Pago**. La multa pasa a **Pagada** y se asienta la fecha de pago.
+
+### D) Consultar un reporte (rol GERENTE o ADMIN)
+
+1. Ingrese con `gerente@kodex.com` / `kodex123` (o con `admin@kodex.com`).
+2. En el menú lateral pulse **Reportes**.
+3. Elija **Reporte de Préstamos** o **Reporte de Multas**.
+4. Ajuste **Desde**, **Hasta** y, si aplica, **Estado**, y pulse **Generar Reporte** / **Consultar**.
+
+---
+
 ## 2. Usuarios de demostración
 
 Contraseña para todos: **`kodex123`**
